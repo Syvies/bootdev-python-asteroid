@@ -1,0 +1,14 @@
+cache-dir = "~/.cache/ruff"
+indent-width = 4
+line-length = 120
+output-format = "grouped"
+output-prefer-rule-codes = true
+respect-gitignore = true
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "tab"
+line-ending = "auto"
+nested-string-quote-style = "preferred"
+quote-style = "double"
