@@ -1,9 +1,13 @@
+from typing import Any
+
 import pygame
+
+type GroupType = pygame.sprite.Group[Any]
 
 
 # Base class for game objects
 class CircleShape(pygame.sprite.Sprite):
-	containers: tuple[pygame.sprite.Group, ...]
+	containers: tuple[GroupType, ...]
 
 	def __init__(self, x: float, y: float, radius: float) -> None:
 		# we will be using this later
