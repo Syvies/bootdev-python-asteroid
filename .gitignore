@@ -163,6 +163,7 @@ poetry.toml
 pyrightconfig.json
 
 # Boot.dev
+game_events.jsonl
 game_state.jsonl
 
 # IDE ignores
