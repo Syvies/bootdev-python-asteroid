@@ -1,10 +1,10 @@
 import random
 from collections.abc import Callable
-from typing import ClassVar
+from typing import ClassVar, override
 
 import pygame
 
-from circleshape import CircleShape, GroupType
+from circleshape import CircleShape
 from constants import (
 	ASTEROID_KINDS,
 	ASTEROID_MAX_RADIUS,
@@ -13,6 +13,7 @@ from constants import (
 	LINE_WIDTH,
 	SCREEN_HEIGHT,
 	SCREEN_WIDTH,
+	GroupType,
 )
 
 Edge = tuple[pygame.Vector2, Callable[[float], pygame.Vector2]]
@@ -22,9 +23,11 @@ class Asteroid(CircleShape):
 	def __init__(self, x: float, y: float, radius: float) -> None:
 		super().__init__(x, y, radius)
 
+	@override
 	def update(self, dt: float) -> None:
 		self.position += self.velocity * dt
 
+	@override
 	def draw(self, screen: pygame.Surface) -> None:
 		pygame.draw.circle(screen, "white", self.position, self.radius, LINE_WIDTH)
 
@@ -59,6 +62,7 @@ class AsteroidField(pygame.sprite.Sprite):
 		asteroid = Asteroid(position.x, position.y, radius)
 		asteroid.velocity = velocity
 
+	@override
 	def update(self, dt: float) -> None:
 		self.spawn_timer += dt
 		if self.spawn_timer > ASTEROID_SPAWN_RATE_SECONDS:

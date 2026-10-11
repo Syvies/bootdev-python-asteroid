@@ -1,7 +1,22 @@
+from typing import override
+
 import pygame
 
 from circleshape import CircleShape
-from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_SPEED, PLAYER_TURN_SPEED
+from constants import LINE_WIDTH, PLAYER_RADIUS, PLAYER_SHOOT_SPEED, PLAYER_SPEED, PLAYER_TURN_SPEED, SHOT_RADIUS
+
+
+class Shot(CircleShape):
+	def __init__(self, x: float, y: float) -> None:
+		super().__init__(x, y, SHOT_RADIUS)
+
+	@override
+	def update(self, dt: float) -> None:
+		self.position += self.velocity * dt
+
+	@override
+	def draw(self, screen: pygame.Surface) -> None:
+		pygame.draw.circle(screen, "white", self.position, self.radius, LINE_WIDTH)
 
 
 class Player(CircleShape):
@@ -17,6 +32,20 @@ class Player(CircleShape):
 		forward_movement *= PLAYER_SPEED * dt
 		self.position += forward_movement
 
+	def shoot(self) -> None:
+		shot: Shot = Shot(self.position.x, self.position.y)
+		shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation)
+		shot.velocity *= PLAYER_SHOOT_SPEED
+
+	def triangle(self) -> list[pygame.Vector2]:
+		forward: pygame.Vector2 = pygame.Vector2(0, 1).rotate(self.rotation)
+		right: pygame.Vector2 = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
+		a: pygame.Vector2 = self.position + forward * self.radius
+		b: pygame.Vector2 = self.position - forward * self.radius - right
+		c: pygame.Vector2 = self.position - forward * self.radius + right
+		return [a, b, c]
+
+	@override
 	def update(self, dt: float) -> None:
 		keys = pygame.key.get_pressed()
 
@@ -28,15 +57,9 @@ class Player(CircleShape):
 			self.move(dt)
 		if keys[pygame.K_s]:
 			self.move(-dt)
+		if keys[pygame.K_SPACE]:
+			self.shoot()
 
-	# in the Player class
-	def triangle(self) -> list[pygame.Vector2]:
-		forward: pygame.Vector2 = pygame.Vector2(0, 1).rotate(self.rotation)
-		right: pygame.Vector2 = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.radius / 1.5
-		a: pygame.Vector2 = self.position + forward * self.radius
-		b: pygame.Vector2 = self.position - forward * self.radius - right
-		c: pygame.Vector2 = self.position - forward * self.radius + right
-		return [a, b, c]
-
+	@override
 	def draw(self, screen: pygame.Surface) -> None:
 		pygame.draw.polygon(screen, "white", self.triangle(), LINE_WIDTH)

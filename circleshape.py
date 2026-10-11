@@ -1,8 +1,8 @@
-from typing import Any
+from typing import override
 
 import pygame
 
-type GroupType = pygame.sprite.Group[Any]
+from constants import GroupType
 
 
 # Base class for game objects
@@ -25,9 +25,10 @@ class CircleShape(pygame.sprite.Sprite):
 		collide: float = self.radius + other.radius
 		return distance <= collide
 
-	def draw(self, screen: pygame.Surface) -> None:
+	def draw(self, _screen: pygame.Surface) -> None:
 		pass
 
+	@override
 	def update(self, dt: float) -> None:
 		# must override
 		pass
