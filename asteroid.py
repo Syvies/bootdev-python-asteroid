@@ -15,6 +15,7 @@ from constants import (
 	SCREEN_WIDTH,
 	GroupType,
 )
+from logger import log_event
 
 Edge = tuple[pygame.Vector2, Callable[[float], pygame.Vector2]]
 
@@ -22,6 +23,20 @@ Edge = tuple[pygame.Vector2, Callable[[float], pygame.Vector2]]
 class Asteroid(CircleShape):
 	def __init__(self, x: float, y: float, radius: float) -> None:
 		super().__init__(x, y, radius)
+
+	def split(self) -> None:
+		self.kill()
+		if self.radius <= ASTEROID_MIN_RADIUS:
+			return
+		log_event("asteroid_split")
+		new_radius: float = self.radius - ASTEROID_MIN_RADIUS
+		angle: float = random.uniform(20.0, 50.0)
+		vel_1: pygame.Vector2 = self.velocity.rotate(angle)
+		vel_2: pygame.Vector2 = self.velocity.rotate(-angle)
+		asteroid_1: Asteroid = Asteroid(self.position.x, self.position.y, new_radius)
+		asteroid_2: Asteroid = Asteroid(self.position.x, self.position.y, new_radius)
+		asteroid_1.velocity = vel_1 * 1.2
+		asteroid_2.velocity = vel_2 * 1.2
 
 	@override
 	def update(self, dt: float) -> None:
